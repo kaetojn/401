@@ -1,4 +1,4 @@
-#import spacy
+import spacy
 import sys
 import argparse
 import os
@@ -9,9 +9,8 @@ import string
 from itertools import cycle
 
 
-#indir = '/u/cs401/A1/data/';
-#indir = '../data/';
-indir = '../test/';
+indir = '/u/cs401/A1/data/';
+
 def preproc1( comment , steps=range(1,11)):
     ''' This function pre-processes a single comment
 
@@ -25,7 +24,7 @@ def preproc1( comment , steps=range(1,11)):
     modComm = ''
     if 1 in steps:
         #Remove all newline characters
-        comment.strip()
+        comment = comment.replace('\n', ' ').replace('\r', '')
     if 2 in steps:
         #Replace HTML character codes
         html_parser = html.parser.HTMLParser()
@@ -114,16 +113,19 @@ def preproc1( comment , steps=range(1,11)):
                         i+=2   
             else:   
                 i += 1
+    lists = []
     if 6 in steps:
+        #Tagging Token
         nlp = spacy.load('en', disable=['parser', 'ner'])
         doc = spacy.tokens.Doc(nlp.vocab, words=comment.split())
         doc = nlp.tagger(doc)
 
-        print(type(doc))
-        print(doc)
-
+        
         for token in doc:
-            print(token.text, token.lemma_, token.pos_, token.tag_)
+            #print(token.text, token.tag_, token.lemma_)
+            x = token.text + '/' + token.tag_
+            lists.append(x)
+        comment = ' '.join(lists)
 
     if 7 in steps:
         #Removing StopWords
@@ -131,7 +133,7 @@ def preproc1( comment , steps=range(1,11)):
         z = comment.split()
         
         for i in range(len(z)):
-            if z[i] in open('../Wordlists/StopWords').read():
+            if z[i] in open('/u/cs401/Wordlists/StopWords').read():
                 x.append(i)
         for index in sorted(x, reverse=True):
             del z[index] 
@@ -139,9 +141,47 @@ def preproc1( comment , steps=range(1,11)):
         comment = ' '.join(z)
 
     if 8 in steps:
-        print('TODO')
+        #Lematization
+        z = comment.split()
+        y = []
+        for i in z:
+
+            delimiter = i.index('/')
+            word = i[:delimiter]
+            tag = i[delimiter:]
+            nlp = spacy.load('en', disable=['parser', 'ner'])
+            doc = nlp(word)
+
+            for token in doc:
+                lemma =  token.lemma_
+            if lemma[0] == '-':
+                i = word + tag
+            else:
+                i = lemma + tag
+            y.append(i)
+        comment = ' '.join(y)
+        
     if 9 in steps:
-        print('TODO')
+        #Add a newline between each sentence
+
+        x = []
+        z = comment.split()
+        for i in range(len(z)):
+            delimiter = z[i].index('/')
+            word = z[i][:delimiter]
+            tag = z[i][delimiter+1:]
+            
+            if((word == '.')):
+                y = z[i] + "\n"
+                x.append(y)
+            elif (((tag == '.')) and (word not in open('/u/cs401/Wordlists/abbrev.english').read())):
+
+                y = z[i] + "\n"
+                x.append(y)
+            else:
+                x.append(z[i])
+        comment = ' '.join(x)
+
     if 10 in steps:
         #Lowercase everything
         comment = comment.lower()
@@ -175,7 +215,7 @@ def main( args ):
                 j['cat'] = file
 
                 #process the body field with preproc1
-                modComm = preproc1(j['body'], range(1,5))
+                modComm = preproc1(j['body'], range(1,11))
 
                 #replace the 'body' field with the processed text
                 j['body'] = modComm
