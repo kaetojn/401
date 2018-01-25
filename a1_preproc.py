@@ -56,7 +56,6 @@ def preproc1( comment , steps=range(1,11)):
                             comment = comment.replace(comment[x:i], " " + comment[x:i] + " ")
                             i+=1
                             pass
-                            #return comment
 
 
                     #Not End of String (Single Punctuation)
@@ -80,13 +79,11 @@ def preproc1( comment , steps=range(1,11)):
                     #Split any other punctuation
                     else:
                         comment = comment.replace(comment[i], " " + comment[i] + " ")
-                        #return comment
             else:
                 i += 1
-        #return comment
+
     if 5 in steps:
         #Add whitespace to clitics
-
         y = string.ascii_letters
         i = 0
 
@@ -163,7 +160,6 @@ def preproc1( comment , steps=range(1,11)):
         
     if 9 in steps:
         #Add a newline between each sentence
-
         x = []
         z = comment.split()
         for i in range(len(z)):
