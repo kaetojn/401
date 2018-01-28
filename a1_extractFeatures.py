@@ -184,9 +184,6 @@ def extract1( comment ):
     numpyarry[27] = np.std(AMS)
     numpyarry[28] = np.std(DMS)
     
-    print("result:")
-    print(numpyarry)
-    print("\n")
     return numpyarry
 
 
@@ -194,7 +191,7 @@ def extract1( comment ):
 def main( args ):
 
     data = json.load(open(args.input))
-    feats = np.zeros( (len(data), 29), dtype=float)
+    feats = np.zeros( (len(data), 174), dtype=float)
     
 
     
@@ -202,18 +199,23 @@ def main( args ):
     # TODO: your code here
     
     for i in range(len(data)):
-        print("feats:")
+        '''print("feats:")
         print(feats)
         print("\n")
-        print("\n")
-        result = extract1(data[i]['body'])
-        feats[i] = result
-        #test = numpy.append(test, [result.reshape(1,29)])
+        print("\n")'''
+        #result = extract1(data[i]['body'])
         
-    print("feats:")
-    print(feats)
-    print("\n")
-    print("\n")    
+        IDs = open('../feats/' + data[i]['cat'] +'_IDS.txt').read().splitlines()
+        IDindex = IDs.index(data[i]['id'])
+        #test = numpy.append(test, [result.reshape(1,29)])
+
+        with np.load('../feats/' + data[i]['cat'] +'_feats.dat.npy') as data:
+            a = data[IDindex]
+        print(a)
+        #print(IDs)
+        print("\n")
+        #feats[i] = result
+           
     np.savez_compressed( args.output, feats)
     
 

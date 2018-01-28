@@ -6,7 +6,6 @@ import json
 import html.parser
 import re
 import string
-from itertools import cycle
 
 
 indir = '/u/cs401/A1/data/';
@@ -130,7 +129,7 @@ def preproc1( comment , steps=range(1,11)):
         z = comment.split()
         
         for i in range(len(z)):
-            if z[i] in open('/u/cs401/Wordlists/StopWords').read():
+            if z[i] in open('/u/cs401/Wordlists/StopWords').read().splitlines():
                 x.append(i)
         for index in sorted(x, reverse=True):
             del z[index] 
@@ -145,7 +144,7 @@ def preproc1( comment , steps=range(1,11)):
 
             delimiter = i.index('/')
             word = i[:delimiter]
-            tag = i[delimiter:]
+            tag = i[delimiter+1:]
             nlp = spacy.load('en', disable=['parser', 'ner'])
             doc = nlp(word)
 
@@ -170,7 +169,7 @@ def preproc1( comment , steps=range(1,11)):
             if((word == '.')):
                 y = z[i] + "\n"
                 x.append(y)
-            elif (((tag == '.')) and (word not in open('/u/cs401/Wordlists/abbrev.english').read())):
+            elif (((tag == '.')) and (word not in open('/u/cs401/Wordlists/abbrev.english').read().splitlines())):
 
                 y = z[i] + "\n"
                 x.append(y)
