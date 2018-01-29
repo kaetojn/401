@@ -21,6 +21,7 @@ def preproc1( comment , steps=range(1,11)):
         modComm : string, the modified comment 
     '''
     modComm = ''
+    nlp = spacy.load('en', disable=['parser', 'ner'])
     if 1 in steps:
         #Remove all newline characters
         comment = comment.replace('\n', ' ').replace('\r', '')
@@ -47,11 +48,11 @@ def preproc1( comment , steps=range(1,11)):
                         try:
                             while(comment[i] in y):
                                 i += 1
-                            comment = comment.replace(comment[x:i], " " + comment[x:i] + " ")
-                            i+=1
+                            comment = comment[:x] + " " + comment[x:i] + " " + comment[i:]
+                            i+=2
                         #End of String (Multiple Punctuation)
                         except IndexError:
-                            comment = comment.replace(comment[x:i], " " + comment[x:i] + " ")
+                            comment = comment[:x] + " " + comment[x:] + " "
                             i+=1
                             pass
 
@@ -59,11 +60,11 @@ def preproc1( comment , steps=range(1,11)):
                     #Not End of String (Single Punctuation)
                     else:
                         #Exceptions to split (Abbreviation, Hypen, Apostrophe)
-                        if((comment[i] == '.') & (comment[i+1] != '')):
+                        if((comment[i] == '.') & (comment[i+1] != ' ')):
                             i += 1
-                        elif((comment[i] == '-') & (comment[i+1] != '')):
+                        elif((comment[i] == '-') & (comment[i+1] != ' ')):
                             i += 1
-                        elif((comment[i] == '\'') & (comment[i+1] != '')):
+                        elif(((comment[i] == '\'') & (comment[i+1] != ' ')) or ((comment[i] == '\'') & (comment[i-1] in string.ascii_letters))):
                             i += 1
                         else:
                             comment = comment[:i] + ' ' + comment[i] + ' ' + comment[i+1:]
@@ -73,15 +74,15 @@ def preproc1( comment , steps=range(1,11)):
                 else:
                     #Only case you dont tokenize up punctuation at the end of sentence
                     if(comment[i] == '\''):
-                        continue
+                        i += 1
                     #Split any other punctuation
                     else:
-                        comment = comment.replace(comment[i], " " + comment[i] + " ")
+                        comment = comment[:i] + " " + comment[i:] + " "
+                        i += 2
             else:
                 i += 1
     if 5 in steps:
         #Add whitespace to clitics
-        
         y = string.ascii_letters
         i = 0
         while(i+1 <= len(comment)):
@@ -100,6 +101,8 @@ def preproc1( comment , steps=range(1,11)):
                     elif((comment[i+1] in y)):
                         comment = comment[:i-1] + ' ' + comment[i-1:] + ' '
                         i+=2
+                    else:
+                        i+=1
                 #End of String                
                 else:
                      if(comment[i] == '\''):
@@ -110,13 +113,11 @@ def preproc1( comment , steps=range(1,11)):
     lists = []
     if 6 in steps:
         #Tagging Token
-        nlp = spacy.load('en', disable=['parser', 'ner'])
         doc = spacy.tokens.Doc(nlp.vocab, words=comment.split())
         doc = nlp.tagger(doc)
 
         
         for token in doc:
-            #print(token.text, token.tag_, token.lemma_)
             x = token.text + '/' + token.tag_
             lists.append(x)
         comment = ' '.join(lists)
@@ -141,7 +142,6 @@ def preproc1( comment , steps=range(1,11)):
             delimiter = i.index('/')
             word = i[:delimiter]
             tag = i[delimiter:]
-            nlp = spacy.load('en', disable=['parser', 'ner'])
             doc = nlp(word)
 
             for token in doc:

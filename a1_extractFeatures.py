@@ -7,6 +7,7 @@ import json
 import re
 import string
 import csv
+import warnings
 
 def extract1( comment ):
     ''' This function extracts features from a single comment
@@ -142,8 +143,11 @@ def extract1( comment ):
     VMS = numpy.append(VMS, [np.zeros((len(z) - len(VMS)))])
     AMS = numpy.append(AMS, [np.zeros((len(z) - len(AMS)))])
     DMS = numpy.append(DMS, [np.zeros((len(z) - len(DMS)))])
-
-    numpyarry = np.zeros((174))
+    
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        numpyarry = np.zeros((174))
+    #np.seterr(divide='ignore', invalid='ignore')
     numpyarry[0] = worddict['fP']
     numpyarry[1] = worddict['sP']
     numpyarry[2] = worddict['tP']
@@ -156,19 +160,54 @@ def extract1( comment ):
     numpyarry[10] = worddict['advb']
     numpyarry[11] = worddict['wh']
     numpyarry[12] = worddict['slang']
-    numpyarry[13] = worddict['upper'] 
-    numpyarry[14] = totalLen//len(sentences)
-    numpyarry[15] = tokenlen//len(z)
+    numpyarry[13] = worddict['upper']
+
+    try:
+        np.seterr(divide='ignore', invalid='ignore')
+        numpyarry[14] = totalLen//len(sentences)
+    except ZeroDivisionError:
+        numpyarry[14] = 0
+    try:
+        np.seterr(divide='ignore', invalid='ignore')
+        numpyarry[15] = tokenlen//len(z)
+    except ZeroDivisionError:
+        numpyarry[15] = 0
+
     numpyarry[16] = len(sentences)
-    numpyarry[17] = totalaoa//len(z)
-    numpyarry[18] = totalimg//len(z)
-    numpyarry[19] = totalfam//len(z)
-    numpyarry[20] = np.std(aoa)
-    numpyarry[21] = np.std(img)
-    numpyarry[22] = np.std(fam)
-    numpyarry[23] = totalV//len(z)
-    numpyarry[24] = totalA//len(z)
-    numpyarry[25] = totalD//len(z)
+
+    try:
+        np.seterr(divide='ignore', invalid='ignore')
+        numpyarry[17] = totalaoa//len(z)
+    except ZeroDivisionError:
+        numpyarry[17] = 0
+    try: 
+        np.seterr(divide='ignore', invalid='ignore')
+        numpyarry[18] = totalimg//len(z)
+    except ZeroDivisionError:
+        numpyarry[18] = 0
+    try: 
+        np.seterr(divide='ignore', invalid='ignore')
+        numpyarry[19] = totalfam//len(z)
+    except ZeroDivisionError:
+        numpyarry[19] = 0
+
+    
+    try:
+        np.seterr(divide='ignore', invalid='ignore')
+        numpyarry[23] = totalV//len(z)
+    except ZeroDivisionError:
+        numpyarry[23] = 0
+    try:
+        np.seterr(divide='ignore', invalid='ignore')
+        numpyarry[24] = totalA//len(z)
+    except ZeroDivisionError:
+        numpyarry[24] = 0
+    try:
+        np.seterr(divide='ignore', invalid='ignore') 
+        numpyarry[25] = totalD//len(z)
+    except ZeroDivisionError:
+        numpyarry[25] = 0
+
     numpyarry[26] = np.std(VMS)
     numpyarry[27] = np.std(AMS)
     numpyarry[28] = np.std(DMS)
@@ -180,7 +219,10 @@ def extract1( comment ):
 def main( args ):
 
     data = json.load(open(args.input))
-    feats = np.zeros( (len(data), 174), dtype=float)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        feats = np.zeros( (len(data), 174), dtype=float)
+    #feats = np.seterr(divide='ignore', invalid='ignore')
     
     
     for i in range(len(data)):

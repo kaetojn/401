@@ -1,0 +1,2 @@
+/local/packages/python-3.6/lib/python3.6/site-packages/numpy/core/_methods.py:135: RuntimeWarning: Degrees of freedom <= 0 for slice
+  keepdims=keepdims)
