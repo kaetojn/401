@@ -4,7 +4,6 @@ import sys
 import argparse
 import os
 import json
-from collections import Counter
 import re
 import string
 import csv
@@ -57,16 +56,16 @@ def extract1( comment ):
         if (tag not in word) and (tag != ".") and (word not in string.punctuation):
             tokenlen += len(word)
         #Feature 1 (Number of first-person pronouns)
-        if word in open('../Wordlists/First-person').read().splitlines():
+        if word in open('/u/cs401/Wordlists/First-person').read().splitlines():
             worddict["fP"] += 1
         #Feature 2 (Number of second-person pronouns)    
-        elif word in open('../Wordlists/Second-person').read().splitlines():
+        elif word in open('/u/cs401/Wordlists/Second-person').read().splitlines():
             worddict["sP"] += 1
         #Feature 3 (Number of third-person pronouns)  
-        elif word in open('../Wordlists/Third-person').read().splitlines():
+        elif word in open('/u/cs401/Wordlists/Third-person').read().splitlines():
             worddict["tP"] += 1
         #Feature 4 (Number of coordinating conjunctions)
-        elif (word in open('../Wordlists/Conjunct').read().splitlines()) or (word in cc):
+        elif (word in open('/u/cs401/Wordlists/Conjunct').read().splitlines()) or (word in cc):
             worddict["cc"] += 1
         #Feature 5 (Number of past-tense verbs)
         elif tag == "vbd":
@@ -98,13 +97,13 @@ def extract1( comment ):
         elif tag == "wdt" or tag == "wp" or  tag == "wp$" or tag == "wrb":
             worddict["wh"] += 1
         #Feature 13 (Number of slang words)
-        elif word in open('../Wordlists/Slang').read().splitlines():
+        elif word in open('/u/cs401/Wordlists/Slang').read().splitlines():
             worddict["slang"] += 1
         #Feature 14 (Number of words in uppercase (≥ 3 letters long))
         elif word.isupper() and length(word) > 3:
             worddict["upper"] += 1
         #For Features 18-23 (Bristol, Gilhooly, and Logie norms)
-        with open('../Wordlists/BristolNorms+GilhoolyLogie.csv') as f:
+        with open('/u/cs401/Wordlists/BristolNorms+GilhoolyLogie.csv') as f:
             rows = csv.reader(f)
             for row in rows:
                 if word == row[1]:                 
@@ -116,7 +115,7 @@ def extract1( comment ):
                     img = numpy.append(img, [int(row[4])])
                     fam = numpy.append(fam, [int(row[5])])
         #For Features 24 - 29 ( Warringer norms)
-        with open('../Wordlists/Ratings_Warriner_et_al.csv') as f:
+        with open('/u/cs401/Wordlists/Ratings_Warriner_et_al.csv') as f:
             rows = csv.reader(f)
             for row in rows:
                 if word == row[1]:                 
@@ -128,16 +127,6 @@ def extract1( comment ):
                     AMS = numpy.append(AMS, [float(row[5])])
                     DMS = numpy.append(DMS, [float(row[8])])
                    
-    '''
-    tagcount = Counter()
-    words = re.compile(r'\w+')
-
-    for o in tags:
-        tagcount.update(words.findall(o.lower()))
-    tagdict = dict(tagcount)
-
-    (word in open('../Wordlists/femaleFirstNames.txt').read().splitlines()) or (word in open('../Wordlists/maleFirstNames.txt').read().splitlines()) or (word in open('../Wordlists/lastNames.txt').read().splitlines())
-    '''
     #For Features 15, 16 & 17    
     sentences = comment.splitlines()
     totalLen = 0
@@ -193,31 +182,33 @@ def main( args ):
     data = json.load(open(args.input))
     feats = np.zeros( (len(data), 174), dtype=float)
     
-
-    
-
-    # TODO: your code here
     
     for i in range(len(data)):
-        '''print("feats:")
-        print(feats)
-        print("\n")
-        print("\n")'''
-        #result = extract1(data[i]['body'])
+
+        result = extract1(data[i]['body'])
         
-        IDs = open('../feats/' + data[i]['cat'] +'_IDS.txt').read().splitlines()
+        IDs = open('/u/cs401/A1/feats/' + data[i]['cat'] +'_IDs.txt').read().splitlines()
         IDindex = IDs.index(data[i]['id'])
         #test = numpy.append(test, [result.reshape(1,29)])
 
-        with np.load('../feats/' + data[i]['cat'] +'_feats.dat.npy') as data:
-            a = data[IDindex]
-        print(a)
-        #print(IDs)
-        print("\n")
-        #feats[i] = result
+        a = np.load('/u/cs401/A1/feats/' + data[i]['cat'] +'_feats.dat.npy')
+        
+        for x in range(a[IDindex].size):
+            result[x+29] = a[IDindex][i]
+
+        if data[i]['cat'] == "Left":
+            result[173] = 0
+        elif data[i]['cat'] == "Center":
+            result[173] = 1
+        elif data[i]['cat'] == "Right":
+            result[173] = 2
+        elif data[i]['cat'] == "Alt":
+            result[173] = 3
+
+        feats[i] = result
+        feats = numpy.around(feats, 2)
            
     np.savez_compressed( args.output, feats)
-    
 
 if __name__ == "__main__": 
 

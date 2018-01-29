@@ -28,11 +28,10 @@ def preproc1( comment , steps=range(1,11)):
         #Replace HTML character codes
         html_parser = html.parser.HTMLParser()
         comment = html_parser.unescape(comment)
-        
     if 3 in steps:
         #Remove all URLs
         comment = re.sub(r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$', '', comment, flags=re.MULTILINE)
-
+        
     if 4 in steps:
         #Add whitespace before punctuations
         y = string.punctuation
@@ -80,12 +79,11 @@ def preproc1( comment , steps=range(1,11)):
                         comment = comment.replace(comment[i], " " + comment[i] + " ")
             else:
                 i += 1
-
     if 5 in steps:
         #Add whitespace to clitics
+        
         y = string.ascii_letters
         i = 0
-
         while(i+1 <= len(comment)):
             if(comment[i] == '\''):
                 #Not End of String
@@ -93,7 +91,7 @@ def preproc1( comment , steps=range(1,11)):
                     # possesive singular 's (it's)
                     if((comment[i+1] == 's')):
                         comment = comment[:i] + ' ' + comment[i:]+  ' '
-                        i+=1
+                        i+=2
                     # possesive plural s' (dogs')
                     elif((comment[i-1] == 's')):
                         comment = comment[:i] + ' ' + comment[i ]+  ' '
@@ -122,7 +120,6 @@ def preproc1( comment , steps=range(1,11)):
             x = token.text + '/' + token.tag_
             lists.append(x)
         comment = ' '.join(lists)
-
     if 7 in steps:
         #Removing StopWords
         x = []
@@ -135,7 +132,6 @@ def preproc1( comment , steps=range(1,11)):
             del z[index] 
         
         comment = ' '.join(z)
-
     if 8 in steps:
         #Lematization
         z = comment.split()
@@ -144,7 +140,7 @@ def preproc1( comment , steps=range(1,11)):
 
             delimiter = i.index('/')
             word = i[:delimiter]
-            tag = i[delimiter+1:]
+            tag = i[delimiter:]
             nlp = spacy.load('en', disable=['parser', 'ner'])
             doc = nlp(word)
 
@@ -156,7 +152,6 @@ def preproc1( comment , steps=range(1,11)):
                 i = lemma + tag
             y.append(i)
         comment = ' '.join(y)
-        
     if 9 in steps:
         #Add a newline between each sentence
         x = []
@@ -164,7 +159,7 @@ def preproc1( comment , steps=range(1,11)):
         for i in range(len(z)):
             delimiter = z[i].index('/')
             word = z[i][:delimiter]
-            tag = z[i][delimiter+1:]
+            tag = z[i][delimiter:]
             
             if((word == '.')):
                 y = z[i] + "\n"
@@ -176,11 +171,9 @@ def preproc1( comment , steps=range(1,11)):
             else:
                 x.append(z[i])
         comment = ' '.join(x)
-
     if 10 in steps:
         #Lowercase everything
         comment = comment.lower()
-    
     modComm = comment
     return modComm
 
