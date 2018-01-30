@@ -250,7 +250,7 @@ def main( args ):
         feats[i] = result
         feats = numpy.around(feats, 2)
         
-        print(result)
+        print(feats)
         print("\n")
     np.savez_compressed( args.output, feats)
 
