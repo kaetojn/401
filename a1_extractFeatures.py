@@ -237,12 +237,7 @@ def main( args ):
         
         for x in range(a[IDindex].size):
             result[x+29] = a[IDindex][x]
-            print("Values x then i")
-            print(a[IDindex][x])
-            print("\n")
-            print(a[IDindex][i])
-            print("\n")
-            print("\n")
+
         if data[i]['cat'] == "Left":
             result[173] = 0
         elif data[i]['cat'] == "Center":
