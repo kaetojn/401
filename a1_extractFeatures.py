@@ -30,7 +30,7 @@ def extract1( comment ):
 
     #Dictionary to track amount of Features 1-14
     worddict = {"fP": 0, "sP": 0, "tP": 0, "cc": 0, "past": 0, "fut": 0, "coma": 0, "mult": 0, "cNoun": 0, "pNoun": 0, "advb": 0, "wh": 0, "slang": 0, "upper": 0}
-    
+
     #Initializiing Variables
     tokenlen = 0
     totalaoa = 0
@@ -236,8 +236,13 @@ def main( args ):
         a = np.load('/u/cs401/A1/feats/' + data[i]['cat'] +'_feats.dat.npy')
         
         for x in range(a[IDindex].size):
-            result[x+29] = a[IDindex][i]
-
+            result[x+29] = a[IDindex][x]
+            print("Values x then i")
+            print(a[IDindex][x])
+            print("\n")
+            print(a[IDindex][i])
+            print("\n")
+            print("\n")
         if data[i]['cat'] == "Left":
             result[173] = 0
         elif data[i]['cat'] == "Center":
@@ -246,10 +251,12 @@ def main( args ):
             result[173] = 2
         elif data[i]['cat'] == "Alt":
             result[173] = 3
-
+	
         feats[i] = result
         feats = numpy.around(feats, 2)
-           
+        
+        print(result)
+        print("\n")
     np.savez_compressed( args.output, feats)
 
 if __name__ == "__main__": 
