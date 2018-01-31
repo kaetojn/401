@@ -144,9 +144,9 @@ def extract1( comment ):
     AMS = numpy.append(AMS, [np.zeros((len(z) - len(AMS)))])
     DMS = numpy.append(DMS, [np.zeros((len(z) - len(DMS)))])
     
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", category=RuntimeWarning)
-        numpyarry = np.zeros((174))
+    #with warnings.catch_warnings():
+    #    warnings.simplefilter("ignore", category=RuntimeWarning)
+    numpyarry = np.zeros((174))
     #np.seterr(divide='ignore', invalid='ignore')
     numpyarry[0] = worddict['fP']
     numpyarry[1] = worddict['sP']
@@ -219,14 +219,13 @@ def extract1( comment ):
 def main( args ):
 
     data = json.load(open(args.input))
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", category=RuntimeWarning)
-        feats = np.zeros( (len(data), 174), dtype=float)
+    #with warnings.catch_warnings():
+    #    warnings.simplefilter("ignore", category=RuntimeWarning)
+    feats = np.zeros( (len(data), 174))
     #feats = np.seterr(divide='ignore', invalid='ignore')
     
     
     for i in range(len(data)):
-
         result = extract1(data[i]['body'])
         
         IDs = open('/u/cs401/A1/feats/' + data[i]['cat'] +'_IDs.txt').read().splitlines()
@@ -248,10 +247,8 @@ def main( args ):
             result[173] = 3
 	
         feats[i] = result
-        feats = numpy.around(feats, 2)
-        
-        print(feats)
-        print("\n")
+        result = numpy.around(result, 2)
+
     np.savez_compressed( args.output, feats)
 
 if __name__ == "__main__": 
