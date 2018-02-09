@@ -6,6 +6,7 @@ import argparse
 import sys
 import os
 from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 
 
 def accuracy( C ):
@@ -37,16 +38,13 @@ def class31(filename):
 
     features = np.load(filename)
     features = features.f.arr_0
-    X_train = features[:,range(0,174)]
-    y_train = features[:,173]
+    X = features[:,range(0,174)]
+    y = features[:,173]
 
-    print(y_train)
-    print(X_train)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, train_size=0.8, random_state=42)
 
-    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, train_size=0.8, random_state=42)
-
-    #clf = SVC()
-    #clf.fit(X, y) 
+    clf = SVC()
+    clf.fit(X, y) 
 
     return (X_train, X_test, y_train, y_test,iBest)
 
@@ -93,10 +91,12 @@ def class34( filename, i ):
     print('TODO Section 3.4')
     
 if __name__ == "__main__":
+    #parser = argparse.ArgumentParser(description='Process each .')
     #parser.add_argument("-i", "--input", help="the input npz file from Task 2", required=True)
     #args = parser.parse_args()
 
     # TODO : complete each classification experiment, in sequence.
+    #class31(args.input)
     class31("feats.npz")
     #class32("feats.npz"):
     #class33("feats.npz"):
