@@ -11,6 +11,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import AdaBoostClassifier
+import operator
 
 
 def accuracy( C ):
@@ -51,7 +52,11 @@ def class31(filename):
        y_test: NumPy array, with the selected testing classes
        i: int, the index of the supposed best classifier
     '''
+
     #implement dictionary
+    accuracydict = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0}
+
+    #load and store features
     features = np.load(filename)
     X = features.f.arr_0[:,range(0,174)]
     y = features.f.arr_0[:,173]
@@ -63,33 +68,35 @@ def class31(filename):
     clf = SVC()
     clf.fit(X_train, y_train)
     svc1 = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
-    svc1_a = accuracy(svc1)
+    accuracydict['0'] = accuracy(svc1)
 
     # 2. SVC (Linear Kernel)
     clf = LinearSVC(random_state=0)
     clf.fit(X_train, y_train)
     svc2 = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
-    svc2_a = accuracy(svc2)
+    accuracydict['1'] = accuracy(svc2)
 
     # 3. RandomForestClassifier
     clf = RandomForestClassifier(max_depth=5)
     clf.fit(X_train, y_train)
     rfc = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
-    rfc_a = accuracy(rfc)
+    accuracydict['2'] = accuracy(rfc)
 
     # 4. MLPClassifier:
     clf = MLPClassifier(alpha=0.05)
     clf.fit(X_train, y_train)
     mlp = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
-    mlp_a = accuracy(mlp)
+    accuracydict['3'] = accuracy(mlp)
 
     # 5. AdaBoostClassifier
     clf = AdaBoostClassifier()
     clf.fit(X_train, y_train)
     abc = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
-    abc_a = accuracy(abc)
+    accuracydict['4'] = accuracy(abc)
 
-    #return (X_train, X_test, y_train, y_test,iBest)
+    iBest = int(max(accuracydict, key=accuracydict.get))
+
+    return (X_train, X_test, y_train, y_test,iBest)
 
 
 def class32(X_train, X_test, y_train, y_test,iBest):
