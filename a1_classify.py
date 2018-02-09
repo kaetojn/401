@@ -5,6 +5,8 @@ import numpy as np
 import argparse
 import sys
 import os
+from sklearn.svm import SVC
+
 
 def accuracy( C ):
     ''' Compute accuracy given Numpy array confusion matrix C. Returns a floating point value '''
@@ -32,7 +34,15 @@ def class31(filename):
        y_test: NumPy array, with the selected testing classes
        i: int, the index of the supposed best classifier
     '''
-    print('TODO Section 3.1')
+
+    print("Hey")
+
+    a = np.load(filename)
+
+    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, train_size=0.8, random_state=42)
+
+    clf = SVC()
+    clf.fit(X, y) 
 
     return (X_train, X_test, y_train, y_test,iBest)
 
@@ -83,3 +93,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # TODO : complete each classification experiment, in sequence.
+    class31("feats.npz")
+    #class32("feats.npz"):
+    #class33("feats.npz"):
+    #class34("feats.npz"):
