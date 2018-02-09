@@ -8,6 +8,9 @@ import os
 from sklearn.svm import SVC
 from sklearn.svm import LinearSVC
 from sklearn.metrics import confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import AdaBoostClassifier
 
 
 def accuracy( C ):
@@ -38,23 +41,38 @@ def class31(filename):
     '''
 
     features = np.load(filename)
-    features = features.f.arr_0
-    X = features[:,range(0,174)]
-    y = features[:,173]
+    X = features.f.arr_0[:,range(0,174)]
+    y = features.f.arr_0[:,173]
 
+    #train_test_split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, train_size=0.8, random_state=42)
 
+    # 1. SVC (Radial Basis Function Kernel )
     clf = SVC()
     clf.fit(X_train, y_train)
+    x = clf.predict(X_test)
 
-    print(X_train)
-    print("\n")
-    print(X_test)
-    print("\n")
-    print(y_train)
-    print("\n")
-    print(y_test)
-    print("\n")
+    print(x)
+
+    # 2. SVC (Linear Kernel)
+    clf = LinearSVC(random_state=0)
+    clf.fit(X_train, y_train)
+    clf.predict(X_test)
+
+    # 3. RandomForestClassifier
+    clf = RandomForestClassifier(max_depth=5)
+    clf.fit(X_train, y_train)
+    clf.predict(X_test)
+
+    # 4. MLPClassifier:
+    clf = MLPClassifier(alpha=0.05)
+    clf.fit(X_train, y_train)
+    clf.predict(X_test)
+
+    # 5. AdaBoostClassifier
+    clf = AdaBoostClassifier(max_depth=5)
+    clf.fit(X_train, y_train)
+    clf.predict(X_test)
 
     return (X_train, X_test, y_train, y_test,iBest)
 
