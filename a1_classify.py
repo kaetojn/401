@@ -15,7 +15,19 @@ from sklearn.ensemble import AdaBoostClassifier
 
 def accuracy( C ):
     ''' Compute accuracy given Numpy array confusion matrix C. Returns a floating point value '''
-    print ('TODO')
+    numer = 0
+    denom = 0
+    for i in range(4):
+        for j in range(4):
+            if i == j:
+                numer += C[i, j]
+            denom += C[i, j]
+
+    if(denom != 0):
+        return numer/denom
+    return 0
+
+
 
 def recall( C ):
     ''' Compute recall given Numpy array confusion matrix C. Returns a list of floating point values '''
@@ -39,42 +51,45 @@ def class31(filename):
        y_test: NumPy array, with the selected testing classes
        i: int, the index of the supposed best classifier
     '''
-
+    #implement dictionary
     features = np.load(filename)
     X = features.f.arr_0[:,range(0,174)]
     y = features.f.arr_0[:,173]
-
+    
     #train_test_split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, train_size=0.8, random_state=42)
 
-    # 1. SVC (Radial Basis Function Kernel )
+    # 1. SVC (Radial Basis Function Kernel)
     clf = SVC()
     clf.fit(X_train, y_train)
-    x = clf.predict(X_test)
-
-    print(x)
+    svc1 = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
+    svc1_a = accuracy(svc1)
 
     # 2. SVC (Linear Kernel)
     clf = LinearSVC(random_state=0)
     clf.fit(X_train, y_train)
-    clf.predict(X_test)
+    svc2 = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
+    svc2_a = accuracy(svc2)
 
     # 3. RandomForestClassifier
     clf = RandomForestClassifier(max_depth=5)
     clf.fit(X_train, y_train)
-    clf.predict(X_test)
+    rfc = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
+    rfc_a = accuracy(rfc)
 
     # 4. MLPClassifier:
     clf = MLPClassifier(alpha=0.05)
     clf.fit(X_train, y_train)
-    clf.predict(X_test)
+    mlp = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
+    mlp_a = accuracy(mlp)
 
     # 5. AdaBoostClassifier
-    clf = AdaBoostClassifier(max_depth=5)
+    clf = AdaBoostClassifier()
     clf.fit(X_train, y_train)
-    clf.predict(X_test)
+    abc = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
+    abc_a = accuracy(abc)
 
-    return (X_train, X_test, y_train, y_test,iBest)
+    #return (X_train, X_test, y_train, y_test,iBest)
 
 
 def class32(X_train, X_test, y_train, y_test,iBest):
@@ -123,9 +138,9 @@ if __name__ == "__main__":
     #parser.add_argument("-i", "--input", help="the input npz file from Task 2", required=True)
     #args = parser.parse_args()
 
-    # TODO : complete each classification experiment, in sequence.
+
     #class31(args.input)
-    class31("feats.npz")
-    #class32("feats.npz"):
+    x = class31("feats.npz")
+    #class32(x):
     #class33("feats.npz"):
     #class34("feats.npz"):
