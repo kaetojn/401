@@ -37,10 +37,11 @@ def class31(filename):
 
     features = np.load(filename)
     features = features.f.arr_0
-    X_train = features[:,range(0,173)]
+    X_train = features[:,range(0,174)]
     y_train = features[:,173]
 
     print(y_train)
+    print(X_train)
 
     #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, train_size=0.8, random_state=42)
 
