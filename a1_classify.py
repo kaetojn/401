@@ -35,7 +35,7 @@ def class31(filename):
        i: int, the index of the supposed best classifier
     '''
 
-    print("Hey")
+    print("Heys")
 
     a = np.load(filename)
 
