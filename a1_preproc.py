@@ -229,8 +229,7 @@ def main( args ):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Process each .')
-    parser.add_argument('ID', metavar='N', type=int, nargs=1,
-                        help='your student ID')
+    parser.add_argument('ID', metavar='N', type=int, nargs=1, help='your student ID')
     parser.add_argument("-o", "--output", help="Directs the output to a filename of your choice", required=True)
     parser.add_argument("--max", help="The maximum number of comments to read from each file", default=10000)
     args = parser.parse_args()
