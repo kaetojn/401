@@ -36,8 +36,9 @@ def class31(filename):
     '''
 
     features = np.load(filename)
-    X_train = features[:,[0:173]]
-    y_train = features[:,[174]]
+    features = features.f.arr_0
+    X_train = features[:,range(0,173)]
+    y_train = features[:,173]
 
     print(y_train)
 
