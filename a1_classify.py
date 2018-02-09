@@ -35,14 +35,16 @@ def class31(filename):
        i: int, the index of the supposed best classifier
     '''
 
-    print("Heys")
+    features = np.load(filename)
+    X_train = features[:,[0:173]]
+    y_train = features[:,[174]]
 
-    a = np.load(filename)
+    print(y_train)
 
     #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, train_size=0.8, random_state=42)
 
-    clf = SVC()
-    clf.fit(X, y) 
+    #clf = SVC()
+    #clf.fit(X, y) 
 
     return (X_train, X_test, y_train, y_test,iBest)
 
@@ -89,8 +91,8 @@ def class34( filename, i ):
     print('TODO Section 3.4')
     
 if __name__ == "__main__":
-    parser.add_argument("-i", "--input", help="the input npz file from Task 2", required=True)
-    args = parser.parse_args()
+    #parser.add_argument("-i", "--input", help="the input npz file from Task 2", required=True)
+    #args = parser.parse_args()
 
     # TODO : complete each classification experiment, in sequence.
     class31("feats.npz")
