@@ -45,7 +45,7 @@ def class31(filename):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, train_size=0.8, random_state=42)
 
     clf = SVC()
-    clf.fit(X, y)
+    clf.fit(X_train, y_train)
 
     print(X_train)
     print("\n")
