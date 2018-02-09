@@ -148,6 +148,7 @@ if __name__ == "__main__":
 
     #class31(args.input)
     x = class31("feats.npz")
+    print(x)
     #class32(x):
     #class33("feats.npz"):
     #class34("feats.npz"):
