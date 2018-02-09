@@ -7,6 +7,7 @@ import sys
 import os
 from sklearn.svm import SVC
 from sklearn.svm import LinearSVC
+from sklearn.metrics import confusion_matrix
 
 
 def accuracy( C ):
