@@ -54,7 +54,7 @@ def class31(filename):
     '''
 
     #implement dictionary
-    accuracydict = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0}
+    accuracydict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
 
     #load and store features
     features = np.load(filename)
