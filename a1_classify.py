@@ -189,6 +189,8 @@ def class32(X_train, X_test, y_train, y_test,iBest):
     X_1k = X_train[:1000, :]
     y_1k = y_train[:1000, :]
 
+    print(X_1k)
+
     return (X_1k, y_1k)
     
 def class33(X_train, X_test, y_train, y_test, i, X_1k, y_1k):
