@@ -146,11 +146,11 @@ def preproc1( comment , steps=range(1,11)):
 
             for token in doc:
                 lemma =  token.lemma_
-            if lemma[0] == '-':
-                i = word + tag
-            else:
-                i = lemma + tag
-            y.append(i)
+                if lemma[0] == '-':
+                    i = word + tag
+                else:
+                    i = lemma + tag
+                y.append(i)
         comment = ' '.join(y)
     if 9 in steps:
         #Add a newline between each sentence

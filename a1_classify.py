@@ -12,6 +12,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import AdaBoostClassifier
 import operator
+import csv
 
 
 def accuracy( C ):
@@ -32,11 +33,35 @@ def accuracy( C ):
 
 def recall( C ):
     ''' Compute recall given Numpy array confusion matrix C. Returns a list of floating point values '''
-    print ('TODO')
+    recallList = []
+    denom = 0
+    for k in range(4):
+        numer = C[k, k]
+        for j in range(4):
+            denom += C[k, j]
+
+        if(denom != 0):
+            recallList.append(numer/denom)
+        else:
+            recallList.append(float(0))
+    return recallList
+
+
 
 def precision( C ):
     ''' Compute precision given Numpy array confusion matrix C. Returns a list of floating point values '''
-    print ('TODO')
+    precisionList = []
+    denom = 0
+    for k in range(4):
+        numer = C[k, k]
+        for i in range(4):
+            denom += C[i, k]
+
+        if(denom != 0):
+            precisionList.append(numer/denom)
+        else:
+            precisionList.append(float(0))
+    return precisionList
     
 
 def class31(filename):
@@ -53,8 +78,11 @@ def class31(filename):
        i: int, the index of the supposed best classifier
     '''
 
-    #implement dictionary
+    #implement dictionary to story accuracy for classifiers
     accuracydict = {'1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
+
+    #data to write to the csv file
+    data = [[1, accuracydict['1']],[2, accuracydict['2']],[3, accuracydict['3']],[4, accuracydict['4']],[5, accuracydict['5']]]
 
     #load and store features
     features = np.load(filename)
@@ -68,35 +96,56 @@ def class31(filename):
     clf = SVC()
     clf.fit(X_train, y_train)
     svc1 = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
-    accuracydict['0'] = accuracy(svc1)
+    accuracydict['1'] = accuracy(svc1)
+    [data[0].append(i) for i in recall(svc1)]
+    [data[0].append(i) for i in precision(svc1)]
+    [data[0].append(j) for i in svc1 for j in i]
 
     # 2. SVC (Linear Kernel)
     clf = LinearSVC(random_state=0)
     clf.fit(X_train, y_train)
     svc2 = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
-    accuracydict['1'] = accuracy(svc2)
+    accuracydict['2'] = accuracy(svc2)
+    [data[1].append(i) for i in recall(svc2)]
+    [data[1].append(i) for i in precision(svc2)]
+    [data[1].append(j) for i in svc2 for j in i]
 
     # 3. RandomForestClassifier
     clf = RandomForestClassifier(max_depth=5)
     clf.fit(X_train, y_train)
     rfc = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
-    accuracydict['2'] = accuracy(rfc)
+    accuracydict['3'] = accuracy(rfc)
+    [data[2].append(i) for i in recall(rfc)]
+    [data[2].append(i) for i in precision(rfc)]
+    [data[2].append(j) for i in rfc for j in i]
+
 
     # 4. MLPClassifier:
     clf = MLPClassifier(alpha=0.05)
     clf.fit(X_train, y_train)
     mlp = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
-    accuracydict['3'] = accuracy(mlp)
+    accuracydict['4'] = accuracy(mlp)
+    [data[3].append(i) for i in recall(mlp)]
+    [data[3].append(i) for i in precision(mlp)]
+    [data[3].append(j) for i in mlp for j in i]
 
     # 5. AdaBoostClassifier
     clf = AdaBoostClassifier()
     clf.fit(X_train, y_train)
     abc = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
-    accuracydict['4'] = accuracy(abc)
+    accuracydict['5'] = accuracy(abc)
+    [data[4].append(i) for i in recall(abc)]
+    [data[4].append(i) for i in precision(abc)]
+    [data[4].append(j) for i in abc for j in i]
+    
+    
+    iBest = max(accuracydict, key=lambda key: accuracydict[key])
 
-    iBest = int(max(accuracydict, key=accuracydict.get))
+    with open('a1_3.1.csv', 'w', newline='') as fp:
+        a = csv.writer(fp, delimiter=',')
+        a.writerows(data)
 
-    return (X_train, X_test, y_train, y_test,iBest)
+    return (X_train, X_test, y_train, y_test,iBest)    
 
 
 def class32(X_train, X_test, y_train, y_test,iBest):
@@ -148,7 +197,6 @@ if __name__ == "__main__":
 
     #class31(args.input)
     x = class31("feats.npz")
-    print(x)
     #class32(x):
     #class33("feats.npz"):
     #class34("feats.npz"):
