@@ -127,7 +127,7 @@ def preproc1( comment , steps=range(1,11)):
         z = comment.split()
         
         for i in range(len(z)):
-            if z[i] in open('/u/cs401/Wordlists/StopWords').read().splitlines():
+            if z[i] in open('StopWords').read().splitlines():
                 x.append(i)
         for index in sorted(x, reverse=True):
             del z[index] 
@@ -164,7 +164,7 @@ def preproc1( comment , steps=range(1,11)):
             if((word == '.')):
                 y = z[i] + "\n"
                 x.append(y)
-            elif (((tag == '.')) and (word not in open('/u/cs401/Wordlists/abbrev.english').read().splitlines())):
+            elif (((tag == '.')) and (word not in open('abbrev.english').read().splitlines())):
 
                 y = z[i] + "\n"
                 x.append(y)

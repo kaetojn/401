@@ -57,16 +57,16 @@ def extract1( comment ):
         if (tag not in word) and (tag != ".") and (word not in string.punctuation):
             tokenlen += len(word)
         #Feature 1 (Number of first-person pronouns)
-        if word in open('/u/cs401/Wordlists/First-person').read().splitlines():
+        if word in open('First-person').read().splitlines():
             worddict["fP"] += 1
         #Feature 2 (Number of second-person pronouns)    
-        elif word in open('/u/cs401/Wordlists/Second-person').read().splitlines():
+        elif word in open('Second-person').read().splitlines():
             worddict["sP"] += 1
         #Feature 3 (Number of third-person pronouns)  
-        elif word in open('/u/cs401/Wordlists/Third-person').read().splitlines():
+        elif word in open('Third-person').read().splitlines():
             worddict["tP"] += 1
         #Feature 4 (Number of coordinating conjunctions)
-        elif (word in open('/u/cs401/Wordlists/Conjunct').read().splitlines()) or (word in cc):
+        elif (word in open('Conjunct').read().splitlines()) or (word in cc):
             worddict["cc"] += 1
         #Feature 5 (Number of past-tense verbs)
         elif tag == "vbd":
@@ -104,7 +104,7 @@ def extract1( comment ):
         elif word.isupper() and length(word) > 3:
             worddict["upper"] += 1
         #For Features 18-23 (Bristol, Gilhooly, and Logie norms)
-        with open('/u/cs401/Wordlists/BristolNorms+GilhoolyLogie.csv') as f:
+        with open('BristolNorms+GilhoolyLogie.csv') as f:
             rows = csv.reader(f)
             for row in rows:
                 if word == row[1]:                 
@@ -116,7 +116,7 @@ def extract1( comment ):
                     img = numpy.append(img, [int(row[4])])
                     fam = numpy.append(fam, [int(row[5])])
         #For Features 24 - 29 ( Warringer norms)
-        with open('/u/cs401/Wordlists/Ratings_Warriner_et_al.csv') as f:
+        with open('Ratings_Warriner_et_al.csv') as f:
             rows = csv.reader(f)
             for row in rows:
                 if word == row[1]:                 
