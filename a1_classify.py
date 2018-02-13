@@ -162,7 +162,26 @@ def class32(X_train, X_test, y_train, y_test,iBest):
        X_1k: numPy array, just 1K rows of X_train
        y_1k: numPy array, just 1K rows of y_train
    '''
-    print('TODO Section 3.2')
+    if iBest == 1:
+        clf = SVC()
+        clf.fit(X_train, y_train)
+        
+    elif iBest == 2:
+        clf = LinearSVC(random_state=0)
+        clf.fit(X_train, y_train)
+        matrix = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
+    elif iBest == 3:
+        clf = RandomForestClassifier(max_depth=5)
+        clf.fit(X_train, y_train)
+        matrix = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])   
+    elif iBest == 4:
+        clf = MLPClassifier(alpha=0.05)
+        clf.fit(X_train, y_train)
+        matrix = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
+    elif iBest == 5:
+        clf = AdaBoostClassifier()
+        clf.fit(X_train, y_train)
+        matrix = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
 
     return (X_1k, y_1k)
     
@@ -188,7 +207,7 @@ def class34( filename, i ):
        i: int, the index of the supposed best classifier (from task 3.1)  
         '''
     print('TODO Section 3.4')
-    
+#def main( args ):
 if __name__ == "__main__":
     #parser = argparse.ArgumentParser(description='Process each .')
     #parser.add_argument("-i", "--input", help="the input npz file from Task 2", required=True)
@@ -197,6 +216,36 @@ if __name__ == "__main__":
 
     #class31(args.input)
     x = class31("feats.npz")
-    #class32(x):
+    best = x[4]
+
+    '''
+    #features = np.load(args.input)
+    features = np.load(feats.npz)
+    X = features.f.arr_0[:,range(0,174)]
+    y = features.f.arr_0[:,173]
+
+    #1K
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=1000, random_state=42)
+    class32(X_train, X_test, y_train, y_test, best)
+    
+    #5K
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=5000, random_state=42)
+    class32(X_train, X_test, y_train, y_test, best)
+
+    #10k
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=10000, random_state=42)
+    class32(X_train, X_test, y_train, y_test, best)
+    
+    #15k
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=15000, random_state=42)
+    class32(X_train, X_test, y_train, y_test, best)
+
+    #20k
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=20000, random_state=42)
+    class32(X_train, X_test, y_train, y_test, best)
+    '''
+    
     #class33("feats.npz"):
     #class34("feats.npz"):
+
+    #main(args)
