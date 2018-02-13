@@ -147,7 +147,7 @@ def class31(filename):
 
     return (X_train, X_test, y_train, y_test,iBest)    
 
-
+List32 = []
 def class32(X_train, X_test, y_train, y_test,iBest):
     ''' This function performs experiment 3.2
     
@@ -165,7 +165,7 @@ def class32(X_train, X_test, y_train, y_test,iBest):
     if iBest == 1:
         clf = SVC()
         clf.fit(X_train, y_train)
-        
+        matrix = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
     elif iBest == 2:
         clf = LinearSVC(random_state=0)
         clf.fit(X_train, y_train)
@@ -182,6 +182,12 @@ def class32(X_train, X_test, y_train, y_test,iBest):
         clf = AdaBoostClassifier()
         clf.fit(X_train, y_train)
         matrix = confusion_matrix(y_test, clf.predict(X_test), labels=[0,1,2,3])
+
+    y = accuracy(matrix)
+    List32.append(y)
+
+    X_1k = X_train[:1000, :]
+    y_1k = y_train[:1000, :]
 
     return (X_1k, y_1k)
     
@@ -207,20 +213,13 @@ def class34( filename, i ):
        i: int, the index of the supposed best classifier (from task 3.1)  
         '''
     print('TODO Section 3.4')
-#def main( args ):
-if __name__ == "__main__":
-    #parser = argparse.ArgumentParser(description='Process each .')
-    #parser.add_argument("-i", "--input", help="the input npz file from Task 2", required=True)
-    #args = parser.parse_args()
 
-
-    #class31(args.input)
-    x = class31("feats.npz")
+def main( args ):
+    x = class31(args.input)
     best = x[4]
 
-    '''
-    #features = np.load(args.input)
-    features = np.load(feats.npz)
+    
+    features = np.load(args.input)
     X = features.f.arr_0[:,range(0,174)]
     y = features.f.arr_0[:,173]
 
@@ -243,9 +242,18 @@ if __name__ == "__main__":
     #20k
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=20000, random_state=42)
     class32(X_train, X_test, y_train, y_test, best)
-    '''
+
+    with open('a1_3.2.csv', 'w', newline='') as fp:
+        a = csv.writer(fp, delimiter=',')
+        a.writerows(List32)
+    
     
     #class33("feats.npz"):
     #class34("feats.npz"):
 
-    #main(args)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Process each .')
+    parser.add_argument("-i", "--input", help="the input npz file from Task 2", required=True)
+    args = parser.parse_args()
+
+    main(args)
