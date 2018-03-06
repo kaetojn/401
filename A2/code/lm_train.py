@@ -25,33 +25,41 @@ def lm_train(data_dir, language, fn_LM):
 	e.g., LM['uni']['word'] = 5 		# The word 'word' appears 5 times
 		  LM['bi']['word']['bird'] = 2 	# The bigram 'word bird' appears 2 times.
     """
-	language_model = {"uni": 0, "bi": 0}
+    language_model = {"uni": 0, "bi": 0}
 
-	u = {}
-	b = {}
+    u = {}
+    b = {}
 
-    path = "/u/cs401/A2_SMT/data/"
+    path = os.getcwd()
     dirPath = os.path.join(path, data_dir)
-	for subdir, dirs, files in os.walk(dirPath):
+    for subdir, dirs, files in os.walk(dirPath):
         for file in files:
             fullFile = os.path.join(dirPath, file)
             if file.endswith(language):
-            	with open(fullFile, "r") as f:
-            		for line in f:
-            			words = line.split()
-            			for i in range(len(words)):
-            				if words[i] not in u.keys():
-            					u[words[i]] = 1
-            				else:
-            					u[words[i]] += 1
+                with open(fullFile, "r") as f:
+                    for line in f:
+                        line = preprocess(line, language)
+                        words = line.split()
 
-            			for i in range(1, len(words)):
-            				if words[i-1] not in b.keys():
-            					b[words[i-1]] = {}
-            					b[words[i-1]][words[i]] += 1
-            				elif words[i] not in b[words[i-1]].keys():
-            					b[words[i-1]][words[i]] += 1
+                        
+                        for i in range(1, len(words)):
+                            if words[i-1] not in b.keys():
+                                b[words[i-1]] = {}
+                                b[words[i-1]][words[i]] = 1
+                                
+                            elif words[i] not in b[words[i-1]].keys():
+                                b[words[i-1]][words[i]] = 1
+                                
+                            else:
+                                b[words[i-1]][words[i]] += 1
 
+
+                        for i in range(len(words)):
+                            if words[i] not in u.keys():
+                                u[words[i]] = 1
+                            else:
+                                u[words[i]] += 1
+                        
 
     language_model = {"uni": u, "bi": b}
 
@@ -63,5 +71,7 @@ def lm_train(data_dir, language, fn_LM):
 
 if __name__ == "__main__":
 
-	x = lm_train(data_dir, 'e', fn_LM)
-    print(x)
+    #"/u/cs401/A2_SMT/data/"
+
+    lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_english")
+    lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
