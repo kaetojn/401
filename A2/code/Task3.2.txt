@@ -1,0 +1,22 @@
+English Perplexity:  2.4181240905007164
+
+
+French Perplexity:  1.944242747786395
+
+
+English MLE Perplexity:  2.4181240905007164
+
+
+French MLE Perplexity:  1.944242747786395
+
+
+English add-1 Perplexity:  2.8687557797086694
+English add-2 Perplexity:  3.0835239158514574
+English add-3 Perplexity:  3.24834920581954
+English add-5 Perplexity:  3.511168777578695
+
+
+French add-1 Perplexity:  2.2802399437643035
+French add-2 Perplexity:  2.4496041359923777
+French add-3 Perplexity:  2.579585370420209
+French add-5 Perplexity:  2.7860680672700617

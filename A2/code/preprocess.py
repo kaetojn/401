@@ -17,7 +17,7 @@ def preprocess(in_sentence, language):
 	separate = in_sentence
 
 	#separate end-of-sentence punctuation
-	separate = re.sub(r"([\w/'+$\s-])+([!\.?\)\",:;])+\s*", r"\1 \2 ", separate) #colons and semicolons, parentheses
+	separate = re.sub(r"([\w/'+$\s-])+([!\.?\)\",:;\'\-])+\s*", r"\1 \2 ", separate) #colons and semicolons, parentheses
 	separate = re.sub(r"([A-Za-z0-9])([\+\-\<\>\=]+)([A-Za-z0-9])\s*", r"\1 \2 \3 ", separate) #separate mathematical operations 
 	separate = re.sub(r"\(([A-Za-z0-9])+([-]+\s*[-]*)([A-Za-z0-9])+\)", r"\1 \2 \3 ", separate) #separate hypen in bracket
 	separate = re.sub(r"([\"])([\w/'+$\s-])+([\"])", r"\1 \2 \3 ", separate) #separate hypen leading quoatation 
