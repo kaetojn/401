@@ -98,7 +98,7 @@ def read_hansard(train_dir, num_sentences):
 							break
 						i += 1
 						line = preprocess(line, "e")
-						english.append(line.split())
+						english.append(line.strip("SENTSTART").strip("SENTEND").split())
 
 				with open(frenchFile, "r") as f:
 					i = 0
@@ -107,7 +107,7 @@ def read_hansard(train_dir, num_sentences):
 							break
 						i += 1
 						line = preprocess(line, "f")
-						french.append(line.split())
+						french.append(line.strip("SENTSTART").strip("SENTEND").split())
 
 		sentence["eng"] = english
 		sentence["fre"] = french
@@ -143,7 +143,8 @@ def initialize(eng, fre):
 						temp[q] = 1/total
 			
 			AM[eng[i][word]] = temp
-
+	AM['SENTSTART']	= {'SENTSTART': 1}	
+	AM['SENTEND']	= {'SENTEND': 1}	
 	return AM
 
 def em_step(AM, tcount, total, eng, fre):
@@ -172,9 +173,9 @@ def em_step(AM, tcount, total, eng, fre):
 			AM[e][f] = tcount[e][f]/total[e]
 
 
-'''
+
 if __name__ == "__main__":
 
 
-	print(align_ibm1("/h/u9/g6/00/ndukaeto/CSC401/401/A2/Hansard/Testing/", 500, 5, "/h/u9/g6/00/ndukaeto/CSC401/401/A2/AM"))
-'''
+	print(align_ibm1("/h/u9/g6/00/ndukaeto/CSC401/401/A2/Hansard/Training/", 1000, 5, "/h/u9/g6/00/ndukaeto/CSC401/401/A2/New Folder/AM3"))
+

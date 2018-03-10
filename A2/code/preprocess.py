@@ -29,7 +29,12 @@ def preprocess(in_sentence, language):
 		separate = re.sub(r"(qu\')([A-Za-z]+)", r"\1 \2 ", separate) # leading qu’
 		separate = re.sub(r"([A-Za-z]+\')(on|il)", r"\1 \2 ", separate) # on or il
 
+
+
 	#convert all tokens to lower-case
 	out_sentence = separate.lower()
+
+	#convert all tokens to lower-case
+	out_sentence = "SENTSTART " + out_sentence.strip('\n') + "SENTEND \n"
 
 	return out_sentence

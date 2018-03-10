@@ -14,7 +14,29 @@ def BLEU_score(candidate, references, n):
 	OUTPUT:
 	bleu_score :	(float) The BLEU score
 	"""
-	
-	#TODO: Implement by student.
-            
+	C = 0
+	words = candidate.split()
+	N = len(words) - (n-1)
+	for i in range(N):
+		ngram = " ".join(words[i:i+n])
+		if any(ngram in word for word in references):
+			C += 1
+	precision = C/N
+
+	reflens = []
+	for refs in references:
+		reflens.append(abs(len(words) - len(refs.split())))
+
+	index = reflens.index(min(reflens))
+	ri = len(references[index].split())
+	ci = len(words)
+
+	brevity = ri/ci
+
+	if brevity < 1:
+		BP = 1
+	else:
+		BP = math.exp(1-brevity)
+
+    bleu_score = (BP * (precision ** (1/n)))       
     return bleu_score

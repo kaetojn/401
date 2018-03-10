@@ -72,10 +72,8 @@ if __name__ == "__main__":
 
     #"/u/cs401/A2_SMT/data/"
 
-    e = lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_english")
-    f = lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
+    e = lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/New Folder/train_english")
+    f = lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/New Folder/train_french")
 
-    print(e["bi"])
-    print("\n")
-    print(f["bi"])
+    print(e)
 '''
