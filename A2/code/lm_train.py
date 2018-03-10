@@ -30,8 +30,7 @@ def lm_train(data_dir, language, fn_LM):
     u = {}
     b = {}
 
-    path = os.getcwd()
-    dirPath = os.path.join(path, data_dir)
+    dirPath = data_dir
     for subdir, dirs, files in os.walk(dirPath):
         for file in files:
             fullFile = os.path.join(dirPath, file)
@@ -62,16 +61,21 @@ def lm_train(data_dir, language, fn_LM):
                         
 
     language_model = {"uni": u, "bi": b}
-
+    '''
     #Save Model
     with open(fn_LM+'.pickle', 'wb') as handle:
         pickle.dump(language_model, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        
+    ''' 
     return language_model
 
 if __name__ == "__main__":
 
     #"/u/cs401/A2_SMT/data/"
 
-    lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_english")
-    lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
+    e = lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_english")
+    f = lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
+
+    print(e["bi"])
+    print("\n")
+    print(f["bi"])
+

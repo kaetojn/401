@@ -43,7 +43,7 @@ if __name__ == "__main__":
     test_LM = lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_english")
     x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "e")
     print("English MLE Perplexity: ", x)
-
+''
     print("\n")
 
     test_LM = lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
