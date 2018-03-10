@@ -146,6 +146,10 @@ def initialize(eng, fre):
 	return AM
 
 def em_step(AM, tcount, total, eng, fre):
+	"""
+	One step in the EM algorithm.
+	Follows the pseudo-code given in the tutorial slides.
+	"""
 
 	for i in range(len(eng)):
 		uniqueEnglish = set(eng[i])
@@ -176,5 +180,5 @@ if __name__ == "__main__":
 
 	#print(d)
 
-	print(align_ibm1("/Users/Kaeto/Documents/CSC401/401/A2/Hansard/Testing/", 1, 1, "/Users/Kaeto/Documents/CSC401/401/A2/AM"))
+	print(align_ibm1("/Users/Kaeto/Documents/CSC401/401/A2/Hansard/Testing/", 10, 10, "/Users/Kaeto/Documents/CSC401/401/A2/AM"))
 
