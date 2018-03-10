@@ -49,6 +49,7 @@ def align_ibm1(train_dir, num_sentences, max_iter, fn_AM):
     # Iterate between E and M steps
 	i = 0
 	while i < max_iter:
+		print(i)
 		em_step(AM, tcount, total, d["eng"], d["fre"])
 		i+=1
 
@@ -171,8 +172,9 @@ def em_step(AM, tcount, total, eng, fre):
 			AM[e][f] = tcount[e][f]/total[e]
 
 
-
+'''
 if __name__ == "__main__":
 
-	print(align_ibm1("/Users/Kaeto/Documents/CSC401/401/A2/Hansard/Testing/", 10, 10, "/Users/Kaeto/Documents/CSC401/401/A2/AM"))
 
+	print(align_ibm1("/h/u9/g6/00/ndukaeto/CSC401/401/A2/Hansard/Testing/", 500, 5, "/h/u9/g6/00/ndukaeto/CSC401/401/A2/AM"))
+'''

@@ -61,13 +61,13 @@ def lm_train(data_dir, language, fn_LM):
                         
 
     language_model = {"uni": u, "bi": b}
-    '''
+
     #Save Model
     with open(fn_LM+'.pickle', 'wb') as handle:
         pickle.dump(language_model, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    ''' 
-    return language_model
 
+    return language_model
+'''
 if __name__ == "__main__":
 
     #"/u/cs401/A2_SMT/data/"
@@ -78,4 +78,4 @@ if __name__ == "__main__":
     print(e["bi"])
     print("\n")
     print(f["bi"])
-
+'''

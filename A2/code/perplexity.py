@@ -37,54 +37,6 @@ def preplexity(LM, test_dir, language, smoothing = False, delta = 0):
     if N > 0:
         pp = 2**(-pp/N)
     return pp
-'''
-if __name__ == "__main__":
-    #test
-    test_LM = lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_english")
-    x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "e")
-    print("English MLE Perplexity: ", x)
-''
-    print("\n")
 
-    test_LM = lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
-    x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "f")
-    print("French MLE Perplexity: ", x)
-
-    print("\n")
-
-    test_LM = lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
-    x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "e", True, 0.1)
-    print("English add-1 Perplexity: ", x)
-
-    test_LM = lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
-    x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "e", True, 0.2)
-    print("English add-2 Perplexity: ", x)
-
-    test_LM = lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
-    x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "e", True, 0.3)
-    print("English add-3 Perplexity: ", x)
-
-    test_LM = lm_train("2", 'e', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
-    x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "e", True, 0.5)
-    print("English add-5 Perplexity: ", x)
-
-    print("\n")
-
-    test_LM = lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
-    x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "f", True, 0.1)
-    print("French add-1 Perplexity: ", x)
-
-    test_LM = lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
-    x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "f", True, 0.2)
-    print("French add-2 Perplexity: ", x)
-
-    test_LM = lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
-    x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "f", True, 0.3)
-    print("French add-3 Perplexity: ", x)
-
-    test_LM = lm_train("2", 'f', "/h/u9/g6/00/ndukaeto/CSC401/401/A2/train_french")
-    x = preplexity(test_LM, "/u/cs401/A2_SMT/data/Hansard/Testing/", "f", True, 0.5)
-    print("French add-5 Perplexity: ", x)
-'''
 
 
