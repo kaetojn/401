@@ -174,11 +174,5 @@ def em_step(AM, tcount, total, eng, fre):
 
 if __name__ == "__main__":
 
-	#d = read_hansard(, 1)
-
-	#y = initialize(d["eng"], d["fre"])
-
-	#print(d)
-
 	print(align_ibm1("/Users/Kaeto/Documents/CSC401/401/A2/Hansard/Testing/", 10, 10, "/Users/Kaeto/Documents/CSC401/401/A2/AM"))
 
