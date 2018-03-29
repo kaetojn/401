@@ -177,5 +177,5 @@ def em_step(AM, tcount, total, eng, fre):
 if __name__ == "__main__":
 
 
-	print(align_ibm1("/h/u9/g6/00/ndukaeto/CSC401/401/A2/Hansard/Training/", 1000, 5, "/h/u9/g6/00/ndukaeto/CSC401/401/A2/New Folder/AM3"))
+	print(align_ibm1("2", 1000, 5, "/Users/Kaeto/Documents/CSC401/401/A2/AM3"))
 
