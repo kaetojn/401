@@ -98,13 +98,12 @@ def logLik( log_Bs, myTheta ):
 def train( speaker, X, M=8, epsilon=0.0, maxIter=20 ):
     ''' Train a model for the given speaker. Returns the theta (omega, mu, sigma)'''
 
-    #Initialize theta
-
-
+    
     
     prev_L :=float("-Inf")
     improvement = float("Inf")
-
+    #Initialize theta
+    
     i = 0
     while i <= maxIter and improvement >= epsilon:
         #ComputeIntermediateResults
@@ -115,7 +114,7 @@ def train( speaker, X, M=8, epsilon=0.0, maxIter=20 ):
             #create  M × T numPy (equation 2)
                 #compute log_p_m_x
 
-        #θ = UpdateParameters (theta, X, L) ;
+        #theta = UpdateParameters (theta, X, L) ;
         
 
         improvement = L − prev L
