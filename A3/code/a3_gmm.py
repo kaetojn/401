@@ -4,6 +4,7 @@ import os, fnmatch
 import random
 import math
 from scipy.special import logsumexp
+import warnings
 
 
 dataDir = '/u/cs401/A3/data/'
@@ -31,8 +32,7 @@ def log_b_m_x( m, x, myTheta, preComputedForM=[]):
     '''
 
     #mu
-    mu = myTheta.mu[m]
-
+    mew = myTheta.mu[m]
     #variance
     v = myTheta.Sigma[m]
 
@@ -41,14 +41,26 @@ def log_b_m_x( m, x, myTheta, preComputedForM=[]):
     b = 1
 
     #myTheta.d = 13
-    for n in range(myTheta.d):
-        f1 += ( (x[n]**2) / (2*v[n]) ) - ( (mu[n]*x[n]) / v[n] )
+    warnings.simplefilter("error", RuntimeWarning)
+    for n in range(13):
+        #print(mew[n])
+        try:
+            f1 += ( (x[n]**2) * (1/v[n]) * (0.5) ) - ( (mew[n]*x[n]) * (1/v[n]) )
+            a += ( (mew[n]**2) * (1/(2*v[n])) )
         
-        a += ( (mu[n]**2) / (2*v[n]) )
-
+        except RuntimeWarning:
+            f1 += 0
+            a += 0
+        
         b *= v[n]
 
-    f2 = a + ((myTheta.d/2)*math.log(2*math.pi, 2)) + ((0.5)*math.log(b, 2))
+    c = (13/2) * math.log((2*math.pi), 2)
+    try:
+        d = ((0.5)*math.log(b, 2))
+    except ValueError:
+        d = 0
+
+    f2 = a + c + d
 
     logprob = (-f1) - f2
 
@@ -63,12 +75,11 @@ def log_p_m_x( m, x, myTheta):
     denominaor = 0
 
     #myTheta.M = 8?
-    for k in range(myTheta.M):
+    for k in range(8):
         o = myTheta.omega[k]
-        denominaor += o *  log_b_m_x( k, x, myTheta, [])
+        denominaor += math.log(o, 2) *  log_b_m_x( k, x, myTheta, [])
 
-    logprob = (numerator - math.log(denominaor, 2))
-
+    logprob = numerator - denominaor
     return logprob
 
     
@@ -86,11 +97,9 @@ def logLik( log_Bs, myTheta ):
     '''
     r = []
 
-    for m in range(myTheta.M):
+    for m in range(13):
         eq4 = math.log(myTheta.omega[m], 2) * log_Bs[m]
         r.append(eq4)
-
-    #eq3 = logsumexp(r) (alternative?)
 
     for i in range(len(r)):
         eq3 += logsumexp(i)
@@ -103,15 +112,15 @@ def train( speaker, X, M=8, epsilon=0.0, maxIter=20 ):
     
     #Initialize theta
     myTheta = theta( speaker, M, X.shape[1] )
-    myTheta.omega = np.random.rand((M,1))
-    myTheta.mu = X((ramdom.randint(0,M)))
-    myTheta.Sigma = np.identity((M))
+    myTheta.omega = np.random.rand(M,1)
+    myTheta.mu = X[np.random.randint(X.shape[0], size=M), :]
+    myTheta.Sigma = np.ones((M,13))
 
     #create  M × T numPy
-    bmx_array = np.zeros((M,X.shape[1]))
-    pmx_array = np.zeros((M,X.shape[1]))
+    T = X.shape[0]
+    pmx_array = np.zeros((M,T))
+    bmx_array = np.zeros((M,T))
     
-    T = X.shape[1]
     Sigma_numerator = 0 
     mu_numerator = 0  
     
@@ -122,24 +131,34 @@ def train( speaker, X, M=8, epsilon=0.0, maxIter=20 ):
     while i <= maxIter and improvement >= epsilon:
         #ComputeIntermediateResults
         for m in range(M): 
-            for t in range(T):
-                #not sure about T or what T is. Do I need function below
-                #bmx = math.exp(log_b_m_x(m, X[t], myTheta, []))
-                pmx = math.exp(log_p_m_x(m, X[t], myTheta))
+            for t in range(T): 
+                pmx = log_p_m_x(m, X[t], myTheta)
+                bmx = log_b_m_x(m, X[t], myTheta)
 
-                #bmx_array[m,t] = bmx
                 pmx_array[m,t] = pmx
+                bmx_array[m,t] = bmx
 
-                mu_numerator += pmx * X[m,t] #or just X[t]?
-                Sigma_numerator += pmx * (X[m,t]**2)
 
+
+        #ComputeLikelihood
+        L = logLik(bmx_array, myTheta)
+        
+        #UpdateParameters
+        for m in range(M):
+
+            #omega
             myTheta.omega[m] = np.sum(pmx_array[m])/T
-            myTheta.mu[m] = mu_numerator/np.sum(pmx_array[m]) 
+
+            #mu
+            mu_numerator += pmx * X[m,t] #or just X[t]?
+           
+            myTheta.mu[m] = mu_numerator/np.sum(pmx_array[m])
+
+            #sigma
+            Sigma_numerator += pmx * (X[m,t]**2)
             myTheta.Sigma[m] = (Sigma_numerator/np.sum(pmx_array[m])) - (myTheta.mu[m]**2)
                 
-        L = logLik(X, myTheta)
-        
-        improvement = L − prev_L
+        improvement = L - prev_L
         prev_L = L
         
         i += 1 
@@ -204,7 +223,6 @@ if __name__ == "__main__":
             for file in files:
                 myMFCC = np.load( os.path.join( dataDir, speaker, file ) )
                 X = np.append( X, myMFCC, axis=0)
-
             trainThetas.append( train(speaker, X, M, epsilon, maxIter) )
 
     # evaluate 
