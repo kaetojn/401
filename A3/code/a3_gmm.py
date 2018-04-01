@@ -25,7 +25,7 @@ def log_b_m_x( m, x, myTheta, preComputedForM=[]):
         
         Parameters:
         m = integer from 0 to M-1
-        x = numpy row vector with dimensions ( d x 1 )
+        x = numpy row vector with dimensions (1xd)
         myTheta = object of class 'theta'.
         preComputedForM =  list of the precomputable terms independent of x
     '''
@@ -59,15 +59,15 @@ def log_p_m_x( m, x, myTheta):
         See equation 2 of handout
     '''
     
-    numerator = myTheta.omega[m] * log_b_m_x( m, x, myTheta, [])
+    numerator = math.log(myTheta.omega[m], 2) * log_b_m_x( m, x, myTheta, [])
     denominaor = 0
 
-    #myTheta.M = 8
+    #myTheta.M = 8?
     for k in range(myTheta.M):
         o = myTheta.omega[k]
         denominaor += o *  log_b_m_x( k, x, myTheta, [])
 
-    logprob = (math.log(numerator, 2) - math.log(denominaor, 2))
+    logprob = (numerator - math.log(denominaor, 2))
 
     return logprob
 
@@ -90,40 +90,59 @@ def logLik( log_Bs, myTheta ):
         eq4 = math.log(myTheta.omega[m], 2) * log_Bs[m]
         r.append(eq4)
 
-    eq3 = logsumexp(r)
+    #eq3 = logsumexp(r) (alternative?)
+
+    for i in range(len(r)):
+        eq3 += logsumexp(i)
 
     return eq3
 
     
 def train( speaker, X, M=8, epsilon=0.0, maxIter=20 ):
     ''' Train a model for the given speaker. Returns the theta (omega, mu, sigma)'''
-
     
-    
-    prev_L :=float("-Inf")
-    improvement = float("Inf")
     #Initialize theta
+    myTheta = theta( speaker, M, X.shape[1] )
+    myTheta.omega = np.random.rand((M,1))
+    myTheta.mu = X((ramdom.randint(0,M)))
+    myTheta.Sigma = np.identity((M))
+
+    #create  M × T numPy
+    bmx_array = np.zeros((M,X.shape[1]))
+    pmx_array = np.zeros((M,X.shape[1]))
+    
+    T = X.shape[1]
+    Sigma_numerator = 0 
+    mu_numerator = 0  
     
     i = 0
+    prev_L = float("-Inf")
+    improvement = float("Inf")
+
     while i <= maxIter and improvement >= epsilon:
         #ComputeIntermediateResults
+        for m in range(M): 
+            for t in range(T):
+                #not sure about T or what T is. Do I need function below
+                #bmx = math.exp(log_b_m_x(m, X[t], myTheta, []))
+                pmx = math.exp(log_p_m_x(m, X[t], myTheta))
 
-        #L = ComputeLikelihood (X, theta)
-            #create  M × T numPy (equation 1)
-                #comput log_b_m_x
-            #create  M × T numPy (equation 2)
-                #compute log_p_m_x
+                #bmx_array[m,t] = bmx
+                pmx_array[m,t] = pmx
 
-        #theta = UpdateParameters (theta, X, L) ;
+                mu_numerator += pmx * X[m,t] #or just X[t]?
+                Sigma_numerator += pmx * (X[m,t]**2)
+
+            myTheta.omega[m] = np.sum(pmx_array[m])/T
+            myTheta.mu[m] = mu_numerator/np.sum(pmx_array[m]) 
+            myTheta.Sigma[m] = (Sigma_numerator/np.sum(pmx_array[m])) - (myTheta.mu[m]**2)
+                
+        L = logLik(X, myTheta)
         
-
-        improvement = L − prev L
+        improvement = L − prev_L
         prev_L = L
         
         i += 1 
-    
-    myTheta = theta( speaker, M, X.shape[1] )
-
     
     return myTheta
 
@@ -142,7 +161,17 @@ def test( mfcc, correctID, models, k=5 ):
         the format of the log likelihood (number of decimal places, or exponent) does not matter
     '''
     bestModel = -1
-    print ('TODO')
+    old = float("-Inf")
+
+    if k > 0:
+        print(correctID)
+        for i in range(len(models)):
+            likelihood = logLik(mfcc, models[i])
+            print(models[i].name, likelihood)
+            if likelihood > old:
+                old = likelihood
+                bestModel = i
+    
     return 1 if (bestModel == correctID) else 0
 
 
@@ -159,14 +188,18 @@ if __name__ == "__main__":
     # train a model for each speaker, and reserve data for testing
     for subdir, dirs, files in os.walk(dataDir):
         for speaker in dirs:
+            #speaker = S-10B, S-11C....
             print( speaker )
 
+            #files = files in speaker directory
             files = fnmatch.filter(os.listdir( os.path.join( dataDir, speaker ) ), '*npy')
             random.shuffle( files )
             
+            #we pop a random mfcc.npy file for each speaker and add it to a list of MFCC (testMFCCs)
             testMFCC = np.load( os.path.join( dataDir, speaker, files.pop() ) )
             testMFCCs.append( testMFCC )
 
+            #X = empty Vector
             X = np.empty((0,d))
             for file in files:
                 myMFCC = np.load( os.path.join( dataDir, speaker, file ) )
