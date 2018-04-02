@@ -101,6 +101,7 @@ def logLik( log_Bs, myTheta ):
         eq4 = math.log(myTheta.omega[m], 2) * log_Bs[m]
         r.append(eq4)
 
+    eq3 = 0
     for i in range(len(r)):
         eq3 += logsumexp(i)
 
@@ -121,8 +122,8 @@ def train( speaker, X, M=8, epsilon=0.0, maxIter=20 ):
     pmx_array = np.zeros((M,T))
     bmx_array = np.zeros((M,T))
     
-    Sigma_numerator = 0 
-    mu_numerator = 0  
+    Sigma_numerator = np.zeros((1,d))
+    mu_numerator = np.zeros((1,d)) 
     
     i = 0
     prev_L = float("-Inf")
@@ -135,28 +136,23 @@ def train( speaker, X, M=8, epsilon=0.0, maxIter=20 ):
                 pmx = log_p_m_x(m, X[t], myTheta)
                 bmx = log_b_m_x(m, X[t], myTheta)
 
-                pmx_array[m,t] = pmx
+                pmx_array[m,t] = math.exp(pmx)
                 bmx_array[m,t] = bmx
 
-
-
-        #ComputeLikelihood
-        L = logLik(bmx_array, myTheta)
-        
-        #UpdateParameters
-        for m in range(M):
+                mu_numerator += (math.exp(pmx) * X[t])
+                Sigma_numerator += (math.exp(pmx) * (X[t]**2))
 
             #omega
             myTheta.omega[m] = np.sum(pmx_array[m])/T
 
             #mu
-            mu_numerator += pmx * X[m,t] #or just X[t]?
-           
-            myTheta.mu[m] = mu_numerator/np.sum(pmx_array[m])
+            myTheta.mu[m] = mu_numerator/(np.sum(pmx_array[m]))
 
             #sigma
-            Sigma_numerator += pmx * (X[m,t]**2)
-            myTheta.Sigma[m] = (Sigma_numerator/np.sum(pmx_array[m])) - (myTheta.mu[m]**2)
+            myTheta.Sigma[m] = ( Sigma_numerator/ (np.sum(pmx_array[m])) ) - (myTheta.mu[m]**2)
+
+        #ComputeLikelihood
+        L = logLik(bmx_array, myTheta)
                 
         improvement = L - prev_L
         prev_L = L
@@ -230,4 +226,6 @@ if __name__ == "__main__":
     for i in range(0,len(testMFCCs)):
         numCorrect += test( testMFCCs[i], i, trainThetas, k ) 
     accuracy = 1.0*numCorrect/len(testMFCCs)
+
+    print("accuracy: ", accuracy)
 
