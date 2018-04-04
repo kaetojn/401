@@ -5,6 +5,7 @@ import random
 import math
 from scipy.special import logsumexp
 import warnings
+from operator import itemgetter
 
 
 #dataDir = '/u/cs401/A3/data/'
@@ -177,18 +178,23 @@ def test( mfcc, correctID, models, k=5 ):
                S-5A -9.21034037197
         the format of the log likelihood (number of decimal places, or exponent) does not matter
     '''
-    bestModel = -1
-    old = float("-Inf")
+    bestModel = float("Inf")
+    best = []
 
     if k > 0:
         print(correctID)
+
         for i in range(len(models)):
             likelihood = logLik(mfcc, models[i])
-            print(models[i].name, likelihood)
-            if likelihood > old:
-                old = likelihood
-                bestModel = i
-    
+            a = (models[i], likelihood)
+            best.append(a)
+
+        best = sorted(best, key=itemgetter(1))
+
+        for i in range(k):
+            print(best[-1-i][0].name, best[-1-i][1])
+
+        bestModel = models.index(best[-1][0])
     return 1 if (bestModel == correctID) else 0
 
 
