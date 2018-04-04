@@ -1,0 +1,40 @@
+Experiments 
+# Speakers
+Less speakers is less thetas to train. This does not give the model enough information to be able to give and accurate result. This would cause the loglikelood to be very low.
+
+# of Iterations
+Generally when iterations are concered the lower the number of iterations correlated to the the higher value of the log-likelihood. For example, for M = 8 AND maxIter = 20 we have a value of 174001.6679 but when M = 8 AND maxIter = 20 we have a value of 140546.7046. This is due to the data not converging and giving accurate results. The model thinks the speaker data is more accurate that it actually is. Hence why after more iterations the model is able to detect nuances and differences better.
+
+# of Components M 
+When the number of components are reduced, there are no real real noticable trends part from the expected loss in accuracy. But this also depends on the number of iterations. When the iterations reach a particular threshold, depending on the number of components, there isn't a significant amount of change in the log-likelihood. For example:
+
+When M = 2 
+	Iterations between 1-10: 148462.6918 - 140472.6918 
+	Iterations between 11-20:140593.8931 - 140693.5527
+
+When M = 4 
+	Iterations between 1-10: 156690.1467 - 140063.5993
+	Iterations between 11-20:140044.2060 - 140123.2771
+
+When M = 8 
+	Iterations between 1-10: 183444.1501 - 138827.0163
+	Iterations between 11-20:138910.2878 - 139730.1058
+
+
+Question 1
+How might you improve the classification accuracy of the Gaussian mixtures, without adding more
+training data?
+
+	Change the initilization of theta to include more accurate samples instead of randomly picking values. Maybe use labels to help classification. With research I found that feature scaling can improve accuracy. Also preprocessing the utterance would help.
+
+Question 2
+When would your classifier decide that a given test utterance comes from none of the trained speaker
+models, and how would your classifier come to this decision?
+
+	This is will occur when the improvement goes belove the epsilon? GMM uses the likelihoods of the unknown speaker utterance given the speaker models. The logliklihoods are used to estimate the confidence of the system. Speaker models are estimated using the EM algorithm.
+
+Question 3
+Can you think of some alternative methods for doing speaker identification that don’t use Gaussian
+mixtures?
+
+	According to my research using a Support Vector Machine is a good alternative fro speaker identification. There is also the Universal Background Model using smoothing and pruning methods to facilitate training. You can also use other text dependent methods. 

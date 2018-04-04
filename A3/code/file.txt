@@ -1,0 +1,3 @@
+a3_gmm.py
+a3_levenshtein.py
+data
