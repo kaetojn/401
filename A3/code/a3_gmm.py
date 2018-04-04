@@ -7,7 +7,8 @@ from scipy.special import logsumexp
 import warnings
 
 
-dataDir = '/u/cs401/A3/data/'
+#dataDir = '/u/cs401/A3/data/'
+dataDir = '/Users/Kaeto/Documents/CSC401/401/A3/data/'
 
 class theta:
     def __init__(self, name, M=8,d=13):
@@ -71,13 +72,12 @@ def log_p_m_x( m, x, myTheta):
         See equation 2 of handout
     '''
     
-    numerator = math.log(myTheta.omega[m], 2) * log_b_m_x( m, x, myTheta, [])
+    numerator = myTheta.omega[m] * log_b_m_x( m, x, myTheta, [])
     denominaor = 0
 
     #myTheta.M = 8?
     for k in range(8):
-        o = myTheta.omega[k]
-        denominaor += math.log(o, 2) *  log_b_m_x( k, x, myTheta, [])
+        denominaor += myTheta.omega[k] *  log_b_m_x( k, x, myTheta, [])
 
     logprob = numerator - denominaor
     return logprob
@@ -97,8 +97,8 @@ def logLik( log_Bs, myTheta ):
     '''
     r = []
 
-    for m in range(13):
-        eq4 = math.log(myTheta.omega[m], 2) * log_Bs[m]
+    for m in range(8):
+        eq4 = myTheta.omega[m] * log_Bs[m]
         r.append(eq4)
 
     eq3 = 0
@@ -128,6 +128,7 @@ def train( speaker, X, M=8, epsilon=0.0, maxIter=20 ):
     i = 0
     prev_L = float("-Inf")
     improvement = float("Inf")
+    warnings.simplefilter("error", RuntimeWarning)
 
     while i <= maxIter and improvement >= epsilon:
         #ComputeIntermediateResults
@@ -136,24 +137,25 @@ def train( speaker, X, M=8, epsilon=0.0, maxIter=20 ):
                 pmx = log_p_m_x(m, X[t], myTheta)
                 bmx = log_b_m_x(m, X[t], myTheta)
 
-                pmx_array[m,t] = math.exp(pmx)
+                pmx_array[m,t] = pmx
                 bmx_array[m,t] = bmx
 
-                mu_numerator += (math.exp(pmx) * X[t])
-                Sigma_numerator += (math.exp(pmx) * (X[t]**2))
-
+                mu_numerator += (logsumexp(pmx_array[m]) * X[t])
+                Sigma_numerator += (logsumexp(pmx_array[m]) * (X[t]**2))
+            
+            #Update Parameters
+            #print(m)
             #omega
-            myTheta.omega[m] = np.sum(pmx_array[m])/T
+            myTheta.omega[m] = logsumexp(pmx_array[m])/T
 
             #mu
-            myTheta.mu[m] = mu_numerator/(np.sum(pmx_array[m]))
-
+            myTheta.mu[m] = (mu_numerator/logsumexp(pmx_array[m]))
             #sigma
-            myTheta.Sigma[m] = ( Sigma_numerator/ (np.sum(pmx_array[m])) ) - (myTheta.mu[m]**2)
+            myTheta.Sigma[m] = (( Sigma_numerator/ logsumexp(pmx_array[m]) ) - (myTheta.mu[m]**2))        
 
         #ComputeLikelihood
         L = logLik(bmx_array, myTheta)
-                
+
         improvement = L - prev_L
         prev_L = L
         
@@ -194,7 +196,7 @@ if __name__ == "__main__":
 
     trainThetas = []
     testMFCCs = []
-    print('TODO: you will need to modify this main block for Sec 2.3')
+    #print('TODO: you will need to modify this main block for Sec 2.3')
     d = 13
     k = 5  # number of top speakers to display, <= 0 if none
     M = 8
@@ -220,6 +222,7 @@ if __name__ == "__main__":
                 myMFCC = np.load( os.path.join( dataDir, speaker, file ) )
                 X = np.append( X, myMFCC, axis=0)
             trainThetas.append( train(speaker, X, M, epsilon, maxIter) )
+            
 
     # evaluate 
     numCorrect = 0;
@@ -228,4 +231,4 @@ if __name__ == "__main__":
     accuracy = 1.0*numCorrect/len(testMFCCs)
 
     print("accuracy: ", accuracy)
-
+    print( "\n" )
